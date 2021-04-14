@@ -33,7 +33,7 @@ Slider.classes = {
     container: 'position-relative my-2',
     handle: 'btn btn-light position-absolute translate-middle p-0',
     hide: 'visually-hidden',
-    slider: 'progress position-relative',
+    slider: 'progress shadow-sm position-relative',
     sliderBar: 'progress-bar position-absolute',
     tick: 'progress rounded-circle position-absolute translate-middle p-0',
     tickFilled: 'progress-bar',
