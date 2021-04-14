@@ -191,6 +191,7 @@
                 this._setValue(value);
             });
 
+
             let isDragging = false;
             let hasMouseover = false;
             const downEvent = dom.mouseDragFactory(
@@ -208,6 +209,7 @@
                     }
 
                     if (this._settings.tooltip === 'show' && !hasMouseover) {
+                        this._tooltip._stop();
                         this._tooltip.show();
                     }
 
@@ -221,6 +223,7 @@
                 },
                 _ => {
                     if (this._settings.tooltip === 'show' && !hasMouseover) {
+                        this._tooltip._stop();
                         this._tooltip.hide();
                     }
 
@@ -312,6 +315,7 @@
             if (this._settings.tooltip === 'show') {
                 dom.addEvent(this._container, 'mouseenter', _ => {
                     if (!isDragging) {
+                        this._tooltip._stop();
                         this._tooltip.show();
                     }
 
@@ -320,6 +324,7 @@
 
                 dom.addEvent(this._container, 'mouseleave', _ => {
                     if (!isDragging) {
+                        this._tooltip._stop();
                         this._tooltip.hide();
                     }
 
