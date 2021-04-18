@@ -33,6 +33,19 @@ Object.assign(Slider.prototype, {
             this._setValue(value);
         });
 
+        const getPosition = e => {
+            if ('touches' in e && e.touches.length) {
+                return {
+                    x: e.touches[0].pageX,
+                    y: e.touches[0].pageY
+                };
+            }
+
+            return {
+                x: e.pageX,
+                y: e.pageY
+            };
+        };
 
         let isDragging = false;
         let hasMouseover = false;
@@ -45,7 +58,8 @@ Object.assign(Slider.prototype, {
                 e.preventDefault();
 
                 if (this._settings.range) {
-                    this._handleActive = dom.nearestTo([this._handleStart, this._handleEnd], e.pageX, e.pageY, true);
+                    const pos = getPosition(e);
+                    this._handleActive = dom.nearestTo([this._handleStart, this._handleEnd], pos.x, pos.y, true);
                 } else {
                     this._handleActive = this._handleEnd;
                 }
@@ -58,12 +72,18 @@ Object.assign(Slider.prototype, {
                 dom.triggerEvent(this._node, 'slide.ui.slider');
             },
             e => {
-                this._updatePercent(e.pageX, e.pageY);
+                const pos = getPosition(e);
+                this._updatePercent(pos.x, pos.y);
                 isDragging = true;
 
                 dom.triggerEvent(this._node, 'sliding.ui.slider');
             },
-            _ => {
+            e => {
+                if (dom.is(e.currentTarget, '[data-ui-value]')) {
+                    const value = dom.getDataset(e.currentTarget, 'uiValue');
+                    this._setValue(value);
+                }
+
                 if (this._settings.tooltip === 'show' && !hasMouseover) {
                     this._tooltip._stop();
                     this._tooltip.hide();
@@ -149,13 +169,12 @@ Object.assign(Slider.prototype, {
             this._setValue(end, start);
         });
 
-        dom.addEvent(handles, 'mousedown', downEvent);
-
-        dom.addEvent(this._slider, 'mousedown', downEvent);
-        dom.addEventDelegate(this._container, 'mousedown', '[data-ui-value]', downEvent);
+        dom.addEvent(handles, 'mousedown.ui.slider touchstart.ui.slider', downEvent);
+        dom.addEvent(this._slider, 'mousedown.ui.slider touchstart.ui.slider', downEvent);
+        dom.addEventDelegate(this._container, 'mousedown.ui.slider touchstart.ui.slider', '[data-ui-value]', downEvent);
 
         if (this._settings.tooltip === 'show') {
-            dom.addEvent(this._container, 'mouseenter', _ => {
+            dom.addEvent(this._container, 'mouseenter.ui.slider', _ => {
                 if (!isDragging) {
                     this._tooltip._stop();
                     this._tooltip.show();
@@ -164,7 +183,7 @@ Object.assign(Slider.prototype, {
                 hasMouseover = true;
             });
 
-            dom.addEvent(this._container, 'mouseleave', _ => {
+            dom.addEvent(this._container, 'mouseleave.ui.slider', _ => {
                 if (!isDragging) {
                     this._tooltip._stop();
                     this._tooltip.hide();
