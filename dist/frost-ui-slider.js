@@ -207,6 +207,7 @@
 
             let isDragging = false;
             let hasMouseover = false;
+            let startValue;
             const downEvent = dom.mouseDragFactory(
                 e => {
                     if (e.button) {
@@ -228,6 +229,8 @@
                     }
 
                     dom.triggerEvent(this._node, 'slide.ui.slider');
+
+                    startValue = dom.getValue(this._node);
                 },
                 e => {
                     const pos = getPosition(e);
@@ -252,6 +255,14 @@
                     isDragging = false;
 
                     dom.triggerEvent(this._node, 'slid.ui.slider');
+
+                    const endValue = dom.getValue(this._node);
+
+                    if (endValue !== startValue) {
+                        dom.triggerEvent(this._node, 'change');
+                    }
+
+                    startValue = null;
                 }
             );
 
@@ -586,8 +597,6 @@
                 `${start}${this._settings.rangeSeparator}${end}` :
                 end;
             dom.setValue(this._node, newValue);
-
-            dom.triggerEvent(this._node, 'change.ui.slider');
         },
 
         /**

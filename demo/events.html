@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrostUI Slider Events</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@latest/dist/frost-ui.css">
+    <script src="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@latest/dist/frost-ui-bundle.js"></script>
+    <script src="../dist/frost-ui-slider.js"></script>
+</head>
+
+<body>
+    <div class="container pt-5">
+        <div class="mb-4">
+            <div class="card mb-2">
+                <div class="card-body py-0 px-2 overflow-auto" id="events" style="height: 100px;"></div>
+            </div>
+            <label for="sliderEvents">Default</label>
+            <input type="text" id="sliderEvents" />
+        </div>
+    </div>
+    <script>
+        const sliderEvents = dom.findOne('#sliderEvents');
+
+        UI.Slider.init(sliderEvents);
+
+        dom.addEvent(sliderEvents, 'change slide.ui.slider sliding.ui.slider slid.ui.slider', e => {
+            const div = dom.create('div', {
+                html: `<small>"${e.type}" event triggered</small>`
+            });
+            dom.append(events, div);
+
+            const scrollHeight = dom.height(events, DOM.SCROLL_BOX);
+            dom.setScrollY(events, scrollHeight);
+        });
+    </script>
+</body>
+
+</html>
