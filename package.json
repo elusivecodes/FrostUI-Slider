@@ -1,6 +1,6 @@
 {
     "name": "frostui-slider",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "FrostUI-Slider is a free, open-source Slider component for Javascript.",
     "keywords": [
         "ui",
@@ -17,7 +17,6 @@
     "main": "./dist/frost-ui-slider.js",
     "files": [
         "/dist/frost-ui-slider.js",
-        "/src/scss",
         "/LICENSE",
         "/README.md"
     ],
