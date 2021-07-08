@@ -25,7 +25,7 @@
 
         UI.Slider.init(sliderEvents);
 
-        dom.addEvent(sliderEvents, 'change slide.ui.slider sliding.ui.slider slid.ui.slider', e => {
+        dom.addEvent(sliderEvents, 'change.ui.slider slide.ui.slider sliding.ui.slider slid.ui.slider', e => {
             const div = dom.create('div', {
                 html: `<small>"${e.type}" event triggered</small>`
             });

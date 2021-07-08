@@ -1,5 +1,5 @@
 /**
- * FrostUI-Slider v1.0.2
+ * FrostUI-Slider v1.0.3
  * https://github.com/elusivecodes/FrostUI-Slider
  */
 (function(global, factory) {
@@ -258,7 +258,7 @@
                     const endValue = dom.getValue(this._node);
 
                     if (endValue !== startValue) {
-                        dom.triggerEvent(this._node, 'change');
+                        dom.triggerEvent(this._node, 'change.ui.slider');
                     }
 
                     startValue = null;

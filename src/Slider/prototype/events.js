@@ -101,7 +101,7 @@ Object.assign(Slider.prototype, {
                 const endValue = dom.getValue(this._node);
 
                 if (endValue !== startValue) {
-                    dom.triggerEvent(this._node, 'change');
+                    dom.triggerEvent(this._node, 'change.ui.slider');
                 }
 
                 startValue = null;
