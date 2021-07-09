@@ -18,23 +18,18 @@
         </div>
         <div class="mb-4">
             <label for="sliderRange">Range</label>
-            <input type="text" id="sliderRange" />
+            <input type="text" id="sliderRange" data-ui-range="true" />
         </div>
         <div class="mb-4">
             <label for="sliderVertical">Vertical</label>
             <div class="d-flex">
                 <div class="me-4">
-                    <input type="text" id="sliderVertical" />
+                    <input type="text" id="sliderVertical" data-ui-orientation="vertical" />
                 </div>
                 <div class="me-4">
-                    <input type="text" id="sliderVerticalRange" />
+                    <input type="text" id="sliderVerticalRange" data-ui-orientation="vertical" data-ui-range="true" />
                 </div>
             </div>
-        </div>
-        <div class="mb-4">
-            <label for="sliderEvent">Event</label>
-            <input type="text" id="sliderEvent" />
-            <div>Value: <span id="sliderEventText"></span></div>
         </div>
         <div class=" mb-4">
             <label for="sliderDisabled">Disabled</label>
@@ -42,19 +37,19 @@
         </div>
         <div class="mb-4">
             <label for="sliderTooltip">Tooltip</label>
-            <input type="text" id="sliderTooltip" />
+            <input type="text" id="sliderTooltip" data-ui-tooltip="always" />
         </div>
         <div class="mb-4">
             <label for="sliderStep">Step Size</label>
-            <input type="text" id="sliderStep" />
+            <input type="text" id="sliderStep" data-ui-min="0" data-ui-max="100" data-ui-step="2.5" />
         </div>
         <div class="mb-4">
             <label for="sliderSegments">Segments</label>
-            <input type="text" id="sliderSegments" />
+            <input type="text" id="sliderSegments" data-ui-selection="bg-info" data-ui-high="bg-success" />
         </div>
         <div class="mb-4">
             <label for="sliderSegmentsRange">Segments (Range)</label>
-            <input type="text" id="sliderSegmentsRange" />
+            <input type="text" id="sliderSegmentsRange" data-ui-range="true" data-ui-low="bg-danger" data-ui-selection="bg-info" data-ui-high="bg-success" />
         </div>
         <div class="mb-4">
             <label for="sliderTicks">Ticks</label>
@@ -62,7 +57,7 @@
         </div>
         <div class="mb-4">
             <label for="sliderLogarithmic">Logarithmic Scale</label>
-            <input type="text" id="sliderLogarithmic" />
+            <input type="text" id="sliderLogarithmic" data-ui-scale="logarithmic" />
         </div>
         <div class="mb-4">
             <label for="sliderRangeHighlights">Range Highlights</label>
@@ -74,8 +69,6 @@
         const sliderRange = dom.findOne('#sliderRange');
         const sliderVertical = dom.findOne('#sliderVertical');
         const sliderVerticalRange = dom.findOne('#sliderVerticalRange');
-        const sliderEvent = dom.findOne('#sliderEvent');
-        const sliderEventText = dom.findOne('#sliderEventText');
         const sliderDisabled = dom.findOne('#sliderDisabled');
         const sliderTooltip = dom.findOne('#sliderTooltip');
         const sliderStep = dom.findOne('#sliderStep');
@@ -86,57 +79,20 @@
         const sliderRangeHighlights = dom.findOne('#sliderRangeHighlights');
 
         UI.Slider.init(sliderDefault);
-
-        UI.Slider.init(sliderRange, {
-            range: true
-        });
-
-        UI.Slider.init(sliderVertical, {
-            orientation: 'vertical'
-        });
-
-        UI.Slider.init(sliderVerticalRange, {
-            range: true,
-            orientation: 'vertical'
-        });
-
-        UI.Slider.init(sliderEvent);
-        dom.addEvent(sliderEvent, 'sliding.ui.slider', _ => {
-            const value = UI.Slider.init(sliderEvent).getValue();
-            dom.setText(sliderEventText, value);
-        });
-
+        UI.Slider.init(sliderRange);
+        UI.Slider.init(sliderVertical);
+        UI.Slider.init(sliderVerticalRange);
         UI.Slider.init(sliderDisabled);
-
-        UI.Slider.init(sliderTooltip, {
-            tooltip: 'always'
-        });
-
-        UI.Slider.init(sliderStep, {
-            min: 0,
-            max: 100,
-            step: 2.5
-        });
-
-        UI.Slider.init(sliderSegments, {
-            selection: 'bg-info',
-            high: 'bg-success'
-        });
-
-        UI.Slider.init(sliderSegmentsRange, {
-            range: true,
-            low: 'bg-danger',
-            selection: 'bg-info',
-            high: 'bg-success'
-        });
+        UI.Slider.init(sliderTooltip);
+        UI.Slider.init(sliderStep);
+        UI.Slider.init(sliderSegments);
+        UI.Slider.init(sliderSegmentsRange);
 
         UI.Slider.init(sliderTicks, {
             ticks: [2.5, 5, 7.5]
         });
 
-        UI.Slider.init(sliderLogarithmic, {
-            scale: 'logarithmic'
-        });
+        UI.Slider.init(sliderLogarithmic);
 
         UI.Slider.init(sliderRangeHighlights, {
             rangeHighlights: [

@@ -1,5 +1,5 @@
 /**
- * FrostUI-Slider v1.0.3
+ * FrostUI-Slider v1.0.4
  * https://github.com/elusivecodes/FrostUI-Slider
  */
 (function(global, factory) {
@@ -23,6 +23,7 @@
     }
 
     const Core = window.Core;
+    const DOM = window.DOM;
     const dom = window.dom;
     const UI = window.UI;
     const document = window.document;
