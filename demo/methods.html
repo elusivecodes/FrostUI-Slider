@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrostUI Slider Methods</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elusivecodes/frostui/dist/frost-ui.css">
+    <script src="https://cdn.jsdelivr.net/gh/elusivecodes/frostui/dist/frost-ui-bundle.js"></script>
+    <script src="../dist/frost-ui-slider.js"></script>
+</head>
+
+<body>
+    <div class="container pt-5">
+        <div class="mb-4">
+            <label for="sliderDefault">Default</label>
+            <input id="sliderDispose" type="text" />
+            <div class="mt-1">
+                <button class="btn btn-danger ripple mb-0" id="sliderDisposeBtn" type="button">Dispose</button>
+                <button class="btn btn-primary ripple mb-0" id="sliderInitBtn" type="button">Init</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const sliderDispose = dom.findOne('#sliderDispose');
+        const sliderDisposeBtn = dom.findOne('#sliderDisposeBtn');
+        const sliderInitBtn = dom.findOne('#sliderInitBtn');
+
+        UI.Slider.init(sliderDispose);
+
+        dom.addEvent(sliderDisposeBtn, 'click', e => {
+            UI.Slider.init(sliderDispose).dispose();
+        });
+
+        dom.addEvent(sliderInitBtn, 'click', e => {
+            UI.Slider.init(sliderDispose);
+        });
+    </script>
+</body>
+
+</html>
