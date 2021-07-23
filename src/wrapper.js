@@ -1,5 +1,5 @@
 /**
- * FrostUI-Slider v1.0.7
+ * FrostUI-Slider v1.0.8
  * https://github.com/elusivecodes/FrostUI-Slider
  */
 (function(global, factory) {

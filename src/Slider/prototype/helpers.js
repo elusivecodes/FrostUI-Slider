@@ -228,7 +228,10 @@ Object.assign(Slider.prototype, {
         const newValue = this._settings.range ?
             `${start}${this._settings.rangeSeparator}${end}` :
             end;
+
         dom.setValue(this._node, newValue);
+
+        dom.triggerEvent(this._node, 'change.ui.slider');
     },
 
     /**

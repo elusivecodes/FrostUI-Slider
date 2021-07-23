@@ -80,6 +80,7 @@ class Slider extends UI.BaseComponent {
         this._handleEnd = null;
         this._handleStart = null;
         this._handleActive = null;
+        this._tickContainer = null;
         this._ticks = null;
 
         super.dispose();

@@ -14,27 +14,60 @@
     <div class="container pt-5">
         <div class="mb-4">
             <label for="sliderDefault">Default</label>
-            <input id="sliderDispose" type="text" />
+            <input id="sliderDefault" type="text" />
             <div class="mt-1">
-                <button class="btn btn-danger ripple mb-0" id="sliderDisposeBtn" type="button">Dispose</button>
-                <button class="btn btn-primary ripple mb-0" id="sliderInitBtn" type="button">Init</button>
+                <div class="btn-group">
+                    <button class="btn btn-primary ripple mb-0" id="sliderInit" type="button">Init</button>
+                    <button class="btn btn-danger ripple mb-0" id="sliderDispose" type="button">Dispose</button>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-success ripple mb-0" id="sliderEnable" type="button">Enable</button>
+                    <button class="btn btn-warning ripple mb-0" id="sliderDisable" type="button">Disable</button>
+                </div>
             </div>
+            <div class="mt-1">
+                <button class="btn btn-secondary ripple mb-0" id="sliderGetValue" type="button">Get Value</button>
+                <button class="btn btn-secondary ripple mb-0" id="sliderSetValue" type="button">Set Value (5)</button>
+            </div>
+            <samp id="output"></samp>
         </div>
     </div>
     <script>
+        const sliderDefault = dom.findOne('#sliderDefault');
+        const sliderInit = dom.findOne('#sliderInit');
         const sliderDispose = dom.findOne('#sliderDispose');
-        const sliderDisposeBtn = dom.findOne('#sliderDisposeBtn');
-        const sliderInitBtn = dom.findOne('#sliderInitBtn');
+        const sliderEnable = dom.findOne('#sliderEnable');
+        const sliderDisable = dom.findOne('#sliderDisable');
+        const sliderGetValue = dom.findOne('#sliderGetValue');
+        const sliderSetValue = dom.findOne('#sliderSetValue');
+        const output = dom.findOne('#output');
 
-        UI.Slider.init(sliderDispose);
-
-        dom.addEvent(sliderDisposeBtn, 'click', e => {
-            UI.Slider.init(sliderDispose).dispose();
+        dom.addEvent(sliderInit, 'click', e => {
+            UI.Slider.init(sliderDefault);
         });
 
-        dom.addEvent(sliderInitBtn, 'click', e => {
-            UI.Slider.init(sliderDispose);
+        dom.addEvent(sliderDispose, 'click', e => {
+            UI.Slider.init(sliderDefault).dispose();
         });
+
+        dom.addEvent(sliderEnable, 'click', e => {
+            UI.Slider.init(sliderDefault).enable();
+        });
+
+        dom.addEvent(sliderDisable, 'click', e => {
+            UI.Slider.init(sliderDefault).disable();
+        });
+
+        dom.addEvent(sliderGetValue, 'click', e => {
+            const value = UI.Slider.init(sliderDefault).getValue();
+            dom.setText(output, `Value: ${value}`);
+        });
+
+        dom.addEvent(sliderSetValue, 'click', e => {
+            UI.Slider.init(sliderDefault).setValue(5);
+        });
+
+        dom.triggerEvent(sliderInit, 'click');
     </script>
 </body>
 

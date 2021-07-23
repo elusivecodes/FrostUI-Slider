@@ -1,5 +1,5 @@
 /**
- * FrostUI-Slider v1.0.7
+ * FrostUI-Slider v1.0.8
  * https://github.com/elusivecodes/FrostUI-Slider
  */
 (function(global, factory) {
@@ -108,6 +108,7 @@
             this._handleEnd = null;
             this._handleStart = null;
             this._handleActive = null;
+            this._tickContainer = null;
             this._ticks = null;
 
             super.dispose();
@@ -164,6 +165,11 @@
          * Attach events for the Slider.
          */
         _events() {
+            dom.addEvent(this._slider, 'contextmenu.ui.colorpicker', e => {
+                // prevent slider node from showing right click menu
+                e.preventDefault();
+            });
+
             dom.addEvent(this._node, 'focus.ui.slider', _ => {
                 dom.focus(this._handleEnd);
             });
@@ -205,7 +211,6 @@
 
             let isDragging = false;
             let hasMouseover = false;
-            let startValue;
             const downEvent = dom.mouseDragFactory(
                 e => {
                     if (e.button) {
@@ -227,8 +232,6 @@
                     }
 
                     dom.triggerEvent(this._node, 'slide.ui.slider');
-
-                    startValue = dom.getValue(this._node);
                 },
                 e => {
                     const pos = getPosition(e);
@@ -253,22 +256,16 @@
                     isDragging = false;
 
                     dom.triggerEvent(this._node, 'slid.ui.slider');
-
-                    const endValue = dom.getValue(this._node);
-
-                    if (endValue !== startValue) {
-                        dom.triggerEvent(this._node, 'change.ui.slider');
-                    }
-
-                    startValue = null;
                 }
             );
 
-            const handles = [this._handleEnd];
+            const handles = this._settings.range ?
+                this._handleEnd :
+                [this._handleStart, this._handleEnd];
 
-            if (this._settings.range) {
-                handles.push(this._handleStart);
-            }
+            dom.addEvent(handles, 'mousedown.ui.slider touchstart.ui.slider', downEvent);
+            dom.addEvent(this._slider, 'mousedown.ui.slider touchstart.ui.slider', downEvent);
+            dom.addEventDelegate(this._container, 'mousedown.ui.slider touchstart.ui.slider', '[data-ui-value]', downEvent);
 
             dom.addEvent(handles, 'keydown.ui.slider', e => {
                 const isStart = this._settings.range && dom.isSame(this._handleStart, e.currentTarget);
@@ -335,10 +332,6 @@
 
                 this._setValue(end, start);
             });
-
-            dom.addEvent(handles, 'mousedown.ui.slider touchstart.ui.slider', downEvent);
-            dom.addEvent(this._slider, 'mousedown.ui.slider touchstart.ui.slider', downEvent);
-            dom.addEventDelegate(this._container, 'mousedown.ui.slider touchstart.ui.slider', '[data-ui-value]', downEvent);
 
             if (this._settings.tooltip === 'show') {
                 dom.addEvent(this._container, 'mouseenter.ui.slider', _ => {
@@ -594,7 +587,10 @@
             const newValue = this._settings.range ?
                 `${start}${this._settings.rangeSeparator}${end}` :
                 end;
+
             dom.setValue(this._node, newValue);
+
+            dom.triggerEvent(this._node, 'change.ui.slider');
         },
 
         /**
