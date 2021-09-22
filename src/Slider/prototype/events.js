@@ -38,20 +38,6 @@ Object.assign(Slider.prototype, {
             this._setValue(value);
         });
 
-        const getPosition = e => {
-            if ('touches' in e && e.touches.length) {
-                return {
-                    x: e.touches[0].pageX,
-                    y: e.touches[0].pageY
-                };
-            }
-
-            return {
-                x: e.pageX,
-                y: e.pageY
-            };
-        };
-
         let isDragging = false;
         let hasMouseover = false;
         const downEvent = dom.mouseDragFactory(
@@ -63,7 +49,7 @@ Object.assign(Slider.prototype, {
                 e.preventDefault();
 
                 if (this._settings.range) {
-                    const pos = getPosition(e);
+                    const pos = UI.getPosition(e);
                     this._handleActive = dom.nearestTo([this._handleStart, this._handleEnd], pos.x, pos.y, true);
                 } else {
                     this._handleActive = this._handleEnd;
@@ -77,7 +63,7 @@ Object.assign(Slider.prototype, {
                 dom.triggerEvent(this._node, 'slide.ui.slider');
             },
             e => {
-                const pos = getPosition(e);
+                const pos = UI.getPosition(e);
                 this._updatePercent(pos.x, pos.y);
                 isDragging = true;
 
