@@ -46,8 +46,6 @@ Object.assign(Slider.prototype, {
                     return false;
                 }
 
-                e.preventDefault();
-
                 if (this._settings.range) {
                     const pos = UI.getPosition(e);
                     this._handleActive = dom.nearestTo([this._handleStart, this._handleEnd], pos.x, pos.y, true);
@@ -92,9 +90,9 @@ Object.assign(Slider.prototype, {
             this._handleEnd :
             [this._handleStart, this._handleEnd];
 
-        dom.addEvent(handles, 'mousedown.ui.slider touchstart.ui.slider', downEvent);
-        dom.addEvent(this._slider, 'mousedown.ui.slider touchstart.ui.slider', downEvent);
-        dom.addEventDelegate(this._container, 'mousedown.ui.slider touchstart.ui.slider', '[data-ui-value]', downEvent);
+        dom.addEvent(handles, 'mousedown.ui.slider touchstart.ui.slider', downEvent, { passive: true });
+        dom.addEvent(this._slider, 'mousedown.ui.slider touchstart.ui.slider', downEvent, { passive: true });
+        dom.addEventDelegate(this._container, 'mousedown.ui.slider touchstart.ui.slider', '[data-ui-value]', downEvent, { passive: true });
 
         dom.addEvent(handles, 'keydown.ui.slider', e => {
             const isStart = this._settings.range && dom.isSame(this._handleStart, e.currentTarget);
