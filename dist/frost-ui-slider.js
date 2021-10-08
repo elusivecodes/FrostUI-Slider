@@ -1,5 +1,5 @@
 /**
- * FrostUI-Slider v1.0.12
+ * FrostUI-Slider v1.0.13
  * https://github.com/elusivecodes/FrostUI-Slider
  */
 (function(global, factory) {
@@ -244,8 +244,8 @@
             );
 
             const handles = this._settings.range ?
-                this._handleEnd :
-                [this._handleStart, this._handleEnd];
+                [this._handleStart, this._handleEnd] :
+                this._handleEnd;
 
             dom.addEvent(handles, 'mousedown.ui.slider touchstart.ui.slider', downEvent, { passive: true });
             dom.addEvent(this._slider, 'mousedown.ui.slider touchstart.ui.slider', downEvent, { passive: true });
