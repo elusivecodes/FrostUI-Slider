@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FrostUI Slider Methods</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@1.4.6/dist/frost-ui.css">
-    <script src="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@1.4.6/dist/frost-ui-bundle.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@2.3.1/dist/frost-ui.css">
+    <script src="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@2.3.1/dist/frost-ui-bundle.js"></script>
     <script src="../dist/frost-ui-slider.js"></script>
 </head>
 
@@ -33,41 +33,41 @@
         </div>
     </div>
     <script>
-        const sliderDefault = dom.findOne('#sliderDefault');
-        const sliderInit = dom.findOne('#sliderInit');
-        const sliderDispose = dom.findOne('#sliderDispose');
-        const sliderEnable = dom.findOne('#sliderEnable');
-        const sliderDisable = dom.findOne('#sliderDisable');
-        const sliderGetValue = dom.findOne('#sliderGetValue');
-        const sliderSetValue = dom.findOne('#sliderSetValue');
-        const output = dom.findOne('#output');
+        const sliderDefault = $.findOne('#sliderDefault');
+        const sliderInit = $.findOne('#sliderInit');
+        const sliderDispose = $.findOne('#sliderDispose');
+        const sliderEnable = $.findOne('#sliderEnable');
+        const sliderDisable = $.findOne('#sliderDisable');
+        const sliderGetValue = $.findOne('#sliderGetValue');
+        const sliderSetValue = $.findOne('#sliderSetValue');
+        const output = $.findOne('#output');
 
-        dom.addEvent(sliderInit, 'click', e => {
+        $.addEvent(sliderInit, 'click', e => {
             UI.Slider.init(sliderDefault);
         });
 
-        dom.addEvent(sliderDispose, 'click', e => {
+        $.addEvent(sliderDispose, 'click', e => {
             UI.Slider.init(sliderDefault).dispose();
         });
 
-        dom.addEvent(sliderEnable, 'click', e => {
+        $.addEvent(sliderEnable, 'click', e => {
             UI.Slider.init(sliderDefault).enable();
         });
 
-        dom.addEvent(sliderDisable, 'click', e => {
+        $.addEvent(sliderDisable, 'click', e => {
             UI.Slider.init(sliderDefault).disable();
         });
 
-        dom.addEvent(sliderGetValue, 'click', e => {
+        $.addEvent(sliderGetValue, 'click', e => {
             const value = UI.Slider.init(sliderDefault).getValue();
-            dom.setText(output, `Value: ${value}`);
+            $.setText(output, `Value: ${value}`);
         });
 
-        dom.addEvent(sliderSetValue, 'click', e => {
+        $.addEvent(sliderSetValue, 'click', e => {
             UI.Slider.init(sliderDefault).setValue(5);
         });
 
-        dom.triggerEvent(sliderInit, 'click');
+        $.triggerEvent(sliderInit, 'click');
     </script>
 </body>
 

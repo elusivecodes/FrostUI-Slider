@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FrostUI Slider Events</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@1.4.6/dist/frost-ui.css">
-    <script src="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@1.4.6/dist/frost-ui-bundle.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@2.3.1/dist/frost-ui.css">
+    <script src="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@2.3.1/dist/frost-ui-bundle.js"></script>
     <script src="../dist/frost-ui-slider.js"></script>
 </head>
 
@@ -21,19 +21,26 @@
         </div>
     </div>
     <script>
-        const sliderEvents = dom.findOne('#sliderEvents');
-        const events = dom.findOne('#events');
+        const sliderEvents = $.findOne('#sliderEvents');
+        const events = $.findOne('#events');
 
         UI.Slider.init(sliderEvents);
 
-        dom.addEvent(sliderEvents, 'change.ui.slider slide.ui.slider sliding.ui.slider slid.ui.slider', e => {
-            const div = dom.create('div', {
-                html: `<small>"${e.type}" event triggered</small>`
-            });
-            dom.append(events, div);
+        $.addEvent(sliderEvents, 'change.ui.slider slide.ui.slider sliding.ui.slider slid.ui.slider', e => {
+            console.log(e);
+            let text = `"${e.type}" event triggered`;
 
-            const scrollHeight = dom.height(events, DOM.SCROLL_BOX);
-            dom.setScrollY(events, scrollHeight);
+            if (e.type === 'sliding' || e.type === 'slid') {
+                text += ` (${e.detail.end})`;
+            }
+
+            const div = $.create('div', {
+                html: `<small>${text}</small>`
+            });
+            $.append(events, div);
+
+            const scrollHeight = $.height(events, { boxSize: $.SCROLL_BOX });
+            $.setScrollY(events, scrollHeight);
         });
     </script>
 </body>

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-ui-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FrostUI Slider</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@1.4.6/dist/frost-ui.css">
-    <script src="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@1.4.6/dist/frost-ui-bundle.js"></script>
-    <script src="../dist/frost-ui-slider.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@2.3.1/dist/frost-ui.css">
+    <script src="https://cdn.jsdelivr.net/gh/elusivecodes/frostui@2.3.1/dist/frost-ui-bundle.js"></script>
+    <script src="../../dist/frost-ui-slider.js"></script>
 </head>
 
 <body>
@@ -65,18 +65,18 @@
         </div>
     </div>
     <script>
-        const sliderDefault = dom.findOne('#sliderDefault');
-        const sliderRange = dom.findOne('#sliderRange');
-        const sliderVertical = dom.findOne('#sliderVertical');
-        const sliderVerticalRange = dom.findOne('#sliderVerticalRange');
-        const sliderDisabled = dom.findOne('#sliderDisabled');
-        const sliderTooltip = dom.findOne('#sliderTooltip');
-        const sliderStep = dom.findOne('#sliderStep');
-        const sliderSegments = dom.findOne('#sliderSegments');
-        const sliderSegmentsRange = dom.findOne('#sliderSegmentsRange');
-        const sliderTicks = dom.findOne('#sliderTicks');
-        const sliderLogarithmic = dom.findOne('#sliderLogarithmic');
-        const sliderRangeHighlights = dom.findOne('#sliderRangeHighlights');
+        const sliderDefault = $.findOne('#sliderDefault');
+        const sliderRange = $.findOne('#sliderRange');
+        const sliderVertical = $.findOne('#sliderVertical');
+        const sliderVerticalRange = $.findOne('#sliderVerticalRange');
+        const sliderDisabled = $.findOne('#sliderDisabled');
+        const sliderTooltip = $.findOne('#sliderTooltip');
+        const sliderStep = $.findOne('#sliderStep');
+        const sliderSegments = $.findOne('#sliderSegments');
+        const sliderSegmentsRange = $.findOne('#sliderSegmentsRange');
+        const sliderTicks = $.findOne('#sliderTicks');
+        const sliderLogarithmic = $.findOne('#sliderLogarithmic');
+        const sliderRangeHighlights = $.findOne('#sliderRangeHighlights');
 
         UI.Slider.init(sliderDefault);
         UI.Slider.init(sliderRange);
