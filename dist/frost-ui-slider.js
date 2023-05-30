@@ -157,16 +157,14 @@
                 return false;
             }
 
-            if (e.type === 'mousedown') {
-                e.preventDefault();
-            }
-
             if (this._options.range) {
                 const pos = ui.getPosition(e);
                 this._handleActive = $.nearestTo([this._handleStart, this._handleEnd], pos.x, pos.y, { offset: true });
             } else {
                 this._handleActive = this._handleEnd;
             }
+
+            $.setDataset(this._slider, { uiDragging: true });
 
             if (this._options.tooltip === 'show' && !hasMouseover) {
                 this._tooltip._stop();
@@ -177,10 +175,6 @@
         };
 
         const moveEvent = (e) => {
-            if (!$.getDataset(this._slider, 'uiDragging')) {
-                $.setDataset(this._slider, { uiDragging: true });
-            }
-
             const originalStartValue = this._startValue;
             const originalEndValue = this._endValue;
 
