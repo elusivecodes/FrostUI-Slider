@@ -6,7 +6,12 @@ import $ from '@fr0st/query';
 export function _render() {
     this._container = $.create('div', {
         class: this.constructor.classes.container,
+        attributes: {
+            role: 'none',
+        },
     });
+
+    this._renderTicks();
 
     this._slider = $.create('div', {
         class: this.constructor.classes.slider,
@@ -36,22 +41,24 @@ export function _render() {
     this._barHigh = this._renderBar(this._options.high);
     $.append(this._slider, this._barHigh);
 
-    this._renderTicks();
     this._renderRangeHighlights();
-
-    this._handleEnd = this._renderHandle();
-    $.append(this._container, this._handleEnd);
 
     if (this._options.range) {
         this._handleStart = this._renderHandle();
         $.append(this._container, this._handleStart);
+
+        this._handleEnd = this._renderHandle();
+        $.append(this._container, this._handleEnd);
+    } else {
+        this._handle = this._renderHandle();
+        $.append(this._container, this._handle);
     }
 
     if (this._options.tooltip) {
         if (this._options.range) {
             this._tooltip = this._createTooltip(this._barSelection, (this._options.handleSize - this._options.sliderSize) / 2);
         } else {
-            this._tooltip = this._createTooltip(this._handleEnd);
+            this._tooltip = this._createTooltip(this._handle);
         }
     }
 
@@ -80,16 +87,20 @@ export function _renderBar(style) {
         $.addClass(bar, style);
     }
 
+    let sizeStyle;
+    let offsetStyle;
     if (this._options.orientation === 'vertical') {
-        $.setStyle(bar, {
-            width: '100%',
-            bottom: 0,
-        });
+        sizeStyle = 'width';
+        offsetStyle = this._options.reversed ? 'bottom' : 'top';
     } else {
-        $.setStyle(bar, {
-            height: '100%',
-        });
+        sizeStyle = 'height';
+        offsetStyle = this._options.reversed ? 'right' : 'left';
     }
+
+    $.setStyle(bar, {
+        [sizeStyle]: '100%',
+        [offsetStyle]: '0',
+    });
 
     return bar;
 };
@@ -102,7 +113,12 @@ export function _renderHandle() {
     const handle = $.create('button', {
         class: this.constructor.classes.handle,
         attributes: {
-            type: 'button',
+            'type': 'button',
+            'role': 'slider',
+            'aria-valuemin': this._options.min,
+            'aria-valuemax': this._options.max,
+            'aria-valuenow': '',
+            'aria-valuetext': '',
         },
     });
 
@@ -161,9 +177,6 @@ export function _renderTicks() {
         const tickContainer = $.create('div');
 
         const tick = $.create('div', {
-            attributes: {
-                title: value,
-            },
             dataset: {
                 uiValue: value,
             },
@@ -195,20 +208,20 @@ export function _renderTicks() {
         $.append(tickContainer, tick);
 
         if (this._options.tickLabels && this._options.tickLabels[index]) {
-            const tickLabel = $.create('div', {
-                text: value,
+            const tickLabel = $.create('small', {
+                text: this._options.tickLabels[index],
                 class: this.constructor.classes.tickLabel,
             });
 
             if (this._options.orientation === 'vertical') {
                 $.setStyle(tickLabel, {
                     top: `${percent}%`,
-                    left: '100%',
+                    left: `${this._options.tickSize / 2}px`,
                     transform: 'translateY(-50%)',
                 });
             } else {
                 $.setStyle(tickLabel, {
-                    top: '100%',
+                    top: `${this._options.tickSize / 2}px`,
                     left: `${percent}%`,
                     transform: 'translateX(-50%)',
                 });

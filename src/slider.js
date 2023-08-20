@@ -15,36 +15,40 @@ export default class Slider extends BaseComponent {
         super(node, options);
 
         this._render();
-        this._events();
 
         let value = $.getValue(this._node);
 
-        if (!value) {
-            value = this._options.defaultValue;
-        }
-
-        let start = null;
-        let end = this._options.min;
-
         if (this._options.range) {
+            this._eventsRange();
+
             const values = $._isArray(value) ?
                 value :
-                `${value}`.split(this._options.rangeSeparator);
+                `${value}`.split(this._options.rangeSeparator, 2);
 
-            start = end;
+            let start; let end;
             if (values.length === 2) {
                 start = values[0];
                 end = values[1];
-            } else if (values[0] !== '') {
-                end = values[0];
             } else {
-                end = this._options.min;
+                start = this._options.defaultValue;
+                end = this._options.defaultValue;
             }
-        } else if (value) {
-            end = value;
+
+            this._setValueRange(start, end);
+        } else {
+            this._events();
+
+            if (value === '') {
+                value = this._options.defaultValue;
+            }
+
+            this._setValue(value);
         }
 
-        this._setValue(end, start);
+        if (this._options.tooltip === 'show') {
+            this._eventsTooltip();
+        }
+
         this._refreshDisabled();
     }
 
@@ -98,7 +102,7 @@ export default class Slider extends BaseComponent {
      */
     getValue() {
         if (!this._options.range) {
-            return this._endValue;
+            return this._value;
         }
 
         return [this._startValue, this._endValue];
@@ -106,13 +110,14 @@ export default class Slider extends BaseComponent {
 
     /**
      * Set the current value(s).
-     * @param {number|array} value The value to set.
+     * @param {number} start The start value to set.
+     * @param {number} [end] The end value to set.
      */
-    setValue(value) {
-        if (this._options.range && $._isArray(value)) {
-            this._setValue(...value.reverse());
+    setValue(start, end) {
+        if (this._options.range) {
+            this._setValueRange(start, end);
         } else {
-            this._setValue(value);
+            this._setValue(start);
         }
     }
 }

@@ -2,6 +2,35 @@ import $ from '@fr0st/query';
 import { Tooltip } from '@fr0st/ui';
 
 /**
+ * Check a value against the current range, and update the active handle.
+ * @param {number} value The value to check.
+ * @return {object} The new start and end values.
+ */
+export function _checkRangeValue(value) {
+    let start = this._startValue;
+    let end = this._endValue;
+    let handle = this._handle;
+
+    if (value < start) {
+        start = value;
+        handle = this._handleStart;
+    } else if (value > end) {
+        end = value;
+        handle = this._handleEnd;
+    } else if ($.isSame(handle, this._handleStart)) {
+        start = value;
+    } else {
+        end = value;
+    }
+
+    if (!$.isSame(handle, this._handle)) {
+        $.focus(handle);
+    }
+
+    return { start, end };
+};
+
+/**
  * Clamp value to nearest tick (if within bounds).
  * @param {number} value The value to check.
  * @return {number} The new value.
@@ -20,6 +49,18 @@ export function _checkTicks(value) {
     if (closest) {
         return closest;
     }
+
+    return value;
+};
+
+/**
+ * Clamp a value to a step-size, and between a min and max value.
+ * @param {number} value The value to clamp.
+ * @return {number} The clamped value.
+ */
+export function _clampValue(value) {
+    value = $._clamp(value, this._options.min, this._options.max);
+    value = $._toStep(value, this._options.step);
 
     return value;
 };
@@ -108,119 +149,95 @@ export function _moveHandle(handle, percent) {
         percent = 100 - percent;
     }
 
+    let offsetStyle;
     if (this._options.orientation === 'vertical') {
-        $.setStyle(handle, { top: `${100 - percent}%` });
+        offsetStyle = 'top';
     } else {
-        $.setStyle(handle, { left: `${percent}%` });
+        offsetStyle = 'left';
     }
+
+    $.setStyle(handle, {
+        [offsetStyle]: `${percent}%`,
+    });
 };
 
 /**
  * Refresh the disabled styling.
  */
 export function _refreshDisabled() {
-    if ($.is(this._node, ':disabled')) {
+    const disabled = $.is(this._node, ':disabled');
+
+    const handles = this._options.range ?
+        [this._handleStart, this._handleEnd] :
+        this._handle;
+
+    if (disabled) {
         $.setStyle(this._container, {
             opacity: this._options.disabledOpacity,
-            pointerEvents: 'none',
+        });
+        $.setAttribute(handles, {
+            tabindex: -1,
         });
     } else {
         $.setStyle(this._container, {
             opacity: '',
-            pointerEvents: '',
         });
+        $.removeAttribute(handles, 'tabindex');
     }
+
+    $.setAttribute(handles, { 'aria-disabled': disabled });
 };
 
 /**
  * Set the slider value.
- * @param {number} end The end value.
- * @param {number} [start] The start value.
+ * @param {number} value The value.
  * @param {object} [options] Options for updating the value.
  * @param  {Boolean} [options.updateValue=true] Whether to update the input value.
  */
-export function _setValue(end, start = null, { updateValue = true } = {}) {
-    end = $._clamp(end, this._options.min, this._options.max);
-    end = $._toStep(end, this._options.step);
-    const percentEnd = this._getPercent(end);
+export function _setValue(value, { updateValue = true } = {}) {
+    value = this._clampValue(value);
 
-    let percent;
-    let percentStart;
-    let percentLow;
-    if (!this._options.range) {
-        percent = percentEnd;
-        percentLow = 0;
-    } else {
-        start = $._clamp(start, this._options.min, this._options.max);
-        start = $._toStep(start, this._options.step);
-        percentStart = this._getPercent(start);
-        percent = percentEnd - percentStart;
-        percentLow = percentStart;
-    }
+    const percent = this._getPercent(value);
+    const percentHigh = 100 - percent;
 
-    if (!updateValue && end === this._endValue && start === this._startValue) {
-        return;
-    }
-
-    if (this._options.reversed) {
-        percentLow = 100 - percentLow;
-    }
-
-    const offsetHigh = percent + percentLow;
-    const percentHigh = 100 - offsetHigh;
-
+    let sizeStyle;
+    let offsetStyle;
     if (this._options.orientation === 'vertical') {
-        $.setStyle(this._barLow, {
-            height: `${percentLow}%`,
-        });
-        $.setStyle(this._barSelection, {
-            height: `${percent}%`,
-            bottom: `${percentLow}%`,
-        });
-        $.setStyle(this._barHigh, {
-            height: `${percentHigh}%`,
-            bottom: `${offsetHigh}%`,
-        });
+        sizeStyle = 'height';
+        offsetStyle = this._options.reversed ? 'bottom' : 'top';
     } else {
-        $.setStyle(this._barLow, {
-            width: `${percentLow}%`,
-        });
-        $.setStyle(this._barSelection, {
-            width: `${percent}%`,
-            left: `${percentLow}%`,
-        });
-        $.setStyle(this._barHigh, {
-            width: `${percentHigh}%`,
-            left: `${offsetHigh}%`,
-        });
+        sizeStyle = 'width';
+        offsetStyle = this._options.reversed ? 'right' : 'left';
     }
 
-    $.setAttribute(this._barHigh, { 'aria-valuenow': percent });
+    $.setStyle(this._barSelection, {
+        [sizeStyle]: `${percent}%`,
+    });
+    $.setStyle(this._barHigh, {
+        [sizeStyle]: `${percentHigh}%`,
+        [offsetStyle]: `${percent}%`,
+    });
 
-    const endTitle = this._options.formatter(end);
-    const startTitle = this._options.formatter(start);
-    let barTitle = endTitle;
-    barTitle = `${startTitle} - ${endTitle}`;
+    if (value !== this._value) {
+        const title = this._options.valueText.bind(this)(value);
 
-    if (end !== this._endValue) {
-        $.setDataset(this._handleEnd, { uiTitle: endTitle });
-        this._moveHandle(this._handleEnd, percentEnd);
-        this._endValue = end;
-    }
+        $.setAttribute(this._handle, {
+            'aria-valuenow': value,
+            'aria-valuetext': title,
+        });
 
-    if (start !== this._startValue) {
-        if (this._options.range) {
-            $.setDataset(this._handleStart, { uiTitle: startTitle });
-            this._moveHandle(this._handleStart, percentStart);
+        if (this._options.tooltip) {
+            $.setDataset(this._handle, { uiTitle: title });
         }
 
-        this._startValue = start;
+        this._moveHandle(this._handle, percent);
+        this._value = value;
     }
 
-    $.setDataset(this._barSelection, { uiTitle: barTitle });
-
-    this._tooltip.refresh();
-    this._tooltip.update();
+    if (this._options.tooltip) {
+        this._tooltip.refresh();
+        this._tooltip.update();
+    }
 
     this._updateTicks();
 
@@ -228,9 +245,96 @@ export function _setValue(end, start = null, { updateValue = true } = {}) {
         return;
     }
 
-    const newValue = this._options.range ?
-        `${start}${this._options.rangeSeparator}${end}` :
-        end;
+    if (`${value}` === $.getValue(this._node)) {
+        return;
+    }
+
+    $.setValue(this._node, value);
+
+    $.triggerEvent(this._node, 'change.ui.slider');
+};
+
+/**
+ * Set the slider range values.
+ * @param {number} start The start value.
+ * @param {number} end The end value.
+ * @param {object} [options] Options for updating the value.
+ * @param  {Boolean} [options.updateValue=true] Whether to update the input value.
+ */
+export function _setValueRange(start, end, { updateValue = true } = {}) {
+    start = this._clampValue(start);
+    end = this._clampValue(end);
+
+    const percentStart = this._getPercent(start);
+    const percentEnd = this._getPercent(end);
+
+    const percentMid = percentEnd - percentStart;
+    const percentLow = percentStart;
+    const offsetHigh = percentLow + percentMid;
+    const percentHigh = 100 - offsetHigh;
+
+    let sizeStyle;
+    let offsetStyle;
+    if (this._options.orientation === 'vertical') {
+        sizeStyle = 'height';
+        offsetStyle = this._options.reversed ? 'bottom' : 'top';
+    } else {
+        sizeStyle = 'width';
+        offsetStyle = this._options.reversed ? 'right' : 'left';
+    }
+
+    $.setStyle(this._barLow, {
+        [sizeStyle]: `${percentLow}%`,
+    });
+    $.setStyle(this._barSelection, {
+        [sizeStyle]: `${percentMid}%`,
+        [offsetStyle]: `${percentLow}%`,
+    });
+    $.setStyle(this._barHigh, {
+        [sizeStyle]: `${percentHigh}%`,
+        [offsetStyle]: `${offsetHigh}%`,
+    });
+
+    if (start !== this._startValue) {
+        const startTitle = this._options.valueText.bind(this)(start);
+
+        $.setAttribute(this._handleStart, {
+            'aria-valuenow': start,
+            'aria-valuetext': startTitle,
+        });
+
+        this._moveHandle(this._handleStart, percentStart);
+        this._startValue = start;
+    }
+
+    if (end !== this._endValue) {
+        const endTitle = this._options.valueText.bind(this)(end);
+
+        $.setAttribute(this._handleEnd, {
+            'aria-valuenow': end,
+            'aria-valuetext': endTitle,
+        });
+
+        this._moveHandle(this._handleEnd, percentEnd);
+        this._endValue = end;
+    }
+
+    if (this._options.tooltip) {
+        const rangeTitle = this._options.rangeText.bind(this)(start, end);
+
+        $.setDataset(this._barSelection, { uiTitle: rangeTitle });
+
+        this._tooltip.refresh();
+        this._tooltip.update();
+    }
+
+    this._updateTicks();
+
+    if (!updateValue) {
+        return;
+    }
+
+    const newValue = `${start}${this._options.rangeSeparator}${end}`;
 
     if (newValue === $.getValue(this._node)) {
         return;
@@ -251,7 +355,7 @@ export function _setValue(end, start = null, { updateValue = true } = {}) {
 export function _updatePercent(x, y, { updateValue = true } = {}) {
     let percent;
     if (this._options.orientation === 'vertical') {
-        percent = 100 - $.percentY(this._slider, y, { offset: true });
+        percent = $.percentY(this._slider, y, { offset: true });
     } else {
         percent = $.percentX(this._slider, x, { offset: true });
     }
@@ -263,32 +367,50 @@ export function _updatePercent(x, y, { updateValue = true } = {}) {
     let value = this._getValue(percent);
     value = this._checkTicks(value);
 
-    let start = null;
-    let end = value;
-    if (this._options.range) {
-        const isEndHandle = $.isSame(this._handleActive, this._handleEnd);
-        if (value < this._startValue && isEndHandle) {
-            this._handleActive = this._handleStart;
-            start = value;
-            end = this._startValue;
-        } else if (value > this._endValue && !isEndHandle) {
-            this._handleActive = this._handleEnd;
-            start = this._endValue;
-        } else if (isEndHandle) {
-            start = this._startValue;
-        } else {
-            start = value;
-            end = this._endValue;
-        }
+    this._setValue(value, { updateValue });
+};
+
+/**
+ * Update the range value based on slider position.
+ * @param {number} x The x position.
+ * @param {number} y The y position.
+ * @param {object} [options] Options for updating the value.
+ * @param  {Boolean} [options.updateValue=true] Whether to update the input value.
+ */
+export function _updatePercentRange(x, y, { updateValue = true } = {}) {
+    let percent;
+    if (this._options.orientation === 'vertical') {
+        percent = $.percentY(this._slider, y, { offset: true });
+    } else {
+        percent = $.percentX(this._slider, x, { offset: true });
     }
 
-    this._setValue(end, start, { updateValue });
+    if (this._options.reversed) {
+        percent = 100 - percent;
+    }
+
+    let value = this._getValue(percent);
+    value = this._checkTicks(value);
+
+    const { start, end } = this._checkRangeValue(value);
+
+    this._setValueRange(start, end, { updateValue });
 };
 
 /**
  * Update tick styling.
  */
 export function _updateTicks() {
+    let start;
+    let end;
+    if (this._options.range) {
+        start = this._startValue;
+        end = this._endValue;
+    } else {
+        start = this._options.min;
+        end = this._value;
+    }
+
     for (const tick of this._ticks) {
         const value = $.getDataset(tick, 'uiValue');
         const highlight = this._options.rangeHighlights.find((range) => value >= range.start && value <= range.end);
@@ -298,9 +420,9 @@ export function _updateTicks() {
         $.setAttribute(tick, { class: '' });
         $.addClass(tick, this.constructor.classes.tick);
 
-        if (this._startValue !== null & value < this._startValue) {
+        if (value < start) {
             style = this._options.low;
-        } else if (value > this._endValue) {
+        } else if (value > end) {
             style = this._options.high;
         } else {
             $.addClass(tick, this.constructor.classes.tickFilled);

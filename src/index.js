@@ -1,7 +1,7 @@
 import { initComponent } from '@fr0st/ui';
 import Slider from './slider.js';
-import { _events } from './prototype/events.js';
-import { _checkTicks, _createTooltip, _getPercent, _getValue, _moveHandle, _refreshDisabled, _setValue, _updatePercent, _updateTicks } from './prototype/helpers.js';
+import { _events, _eventsRange, _eventsTooltip } from './prototype/events.js';
+import { _checkRangeValue, _checkTicks, _clampValue, _createTooltip, _getPercent, _getValue, _moveHandle, _refreshDisabled, _setValue, _setValueRange, _updatePercent, _updatePercentRange, _updateTicks } from './prototype/helpers.js';
 import { _render, _renderBar, _renderHandle, _renderRangeHighlights, _renderTicks } from './prototype/render.js';
 
 // Slider default options
@@ -11,13 +11,14 @@ Slider.defaults = {
     defaultValue: 0,
     orientation: 'horizontal',
     scale: 'linear',
-    formatter: (value) => value,
+    valueText: (value) => value,
+    rangeText: (start, end) => `${start} - ${end}`,
     tickSize: 30,
     handleSize: 20,
     handleSizeRatio: .75,
     sliderSize: 10,
     verticalHeight: 200,
-    step: .01,
+    step: 1,
     tooltip: 'show',
     tooltipPlacement: null,
     low: null,
@@ -37,21 +38,25 @@ Slider.defaults = {
 // Slider classes
 Slider.classes = {
     container: 'position-relative my-2',
-    handle: 'bg-body-tertiary border rounded focus-ring position-absolute translate-middle',
+    handle: 'bg-body-tertiary border rounded focus-ring position-absolute translate-middle z-2',
     hide: 'visually-hidden',
     slider: 'progress position-relative',
     sliderBar: 'progress-bar position-absolute',
     tick: 'progress rounded-circle position-absolute translate-middle',
-    tickFilled: 'progress-bar',
-    tickLabel: 'position-absolute',
+    tickFilled: 'progress-bar z-1',
+    tickLabel: 'position-absolute p-1',
 };
 
 // Slider prototype
 const proto = Slider.prototype;
 
+proto._checkRangeValue = _checkRangeValue;
 proto._checkTicks = _checkTicks;
+proto._clampValue = _clampValue;
 proto._createTooltip = _createTooltip;
 proto._events = _events;
+proto._eventsRange = _eventsRange;
+proto._eventsTooltip = _eventsTooltip;
 proto._getPercent = _getPercent;
 proto._getValue = _getValue;
 proto._moveHandle = _moveHandle;
@@ -62,7 +67,9 @@ proto._renderHandle = _renderHandle;
 proto._renderRangeHighlights = _renderRangeHighlights;
 proto._renderTicks = _renderTicks;
 proto._setValue = _setValue;
+proto._setValueRange = _setValueRange;
 proto._updatePercent = _updatePercent;
+proto._updatePercentRange = _updatePercentRange;
 proto._updateTicks = _updateTicks;
 
 // Slider init
