@@ -119,8 +119,14 @@ export function _renderHandle() {
             'aria-valuemax': this._options.max,
             'aria-valuenow': '',
             'aria-valuetext': '',
+            'aria-required': $.getProperty(this._node, 'required'),
         },
     });
+
+    if (this._label) {
+        const labelId = $.getAttribute(this._label, 'id');
+        $.setAttribute(handle, { 'aria-labelledby': labelId });
+    }
 
     if (this._options.orientation === 'vertical') {
         $.setStyle(handle, {

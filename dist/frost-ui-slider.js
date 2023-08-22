@@ -17,6 +17,14 @@
         constructor(node, options) {
             super(node, options);
 
+            const id = $.getAttribute(this._node, 'id');
+            this._label = $.findOne(`label[for="${id}"]`);
+
+            if (this._label && !$.getAttribute(this._label, 'id')) {
+                $.setAttribute(this._label, { id: ui.generateId('starrating-label') });
+                this._labelId = true;
+            }
+
             this._render();
 
             let value = $.getValue(this._node);
@@ -67,6 +75,10 @@
          * Dispose the Slider.
          */
         dispose() {
+            if (this._labelId) {
+                $.removeAttribute(this._label, 'id');
+            }
+
             if (this._tooltip) {
                 this._tooltip.dispose();
                 this._tooltip = null;
@@ -1000,8 +1012,14 @@
                 'aria-valuemax': this._options.max,
                 'aria-valuenow': '',
                 'aria-valuetext': '',
+                'aria-required': $.getProperty(this._node, 'required'),
             },
         });
+
+        if (this._label) {
+            const labelId = $.getAttribute(this._label, 'id');
+            $.setAttribute(handle, { 'aria-labelledby': labelId });
+        }
 
         if (this._options.orientation === 'vertical') {
             $.setStyle(handle, {

@@ -1,5 +1,5 @@
 import $ from '@fr0st/query';
-import { BaseComponent } from '@fr0st/ui';
+import { BaseComponent, generateId } from '@fr0st/ui';
 
 /**
  * Slider Class
@@ -13,6 +13,14 @@ export default class Slider extends BaseComponent {
      */
     constructor(node, options) {
         super(node, options);
+
+        const id = $.getAttribute(this._node, 'id');
+        this._label = $.findOne(`label[for="${id}"]`);
+
+        if (this._label && !$.getAttribute(this._label, 'id')) {
+            $.setAttribute(this._label, { id: generateId('starrating-label') });
+            this._labelId = true;
+        }
 
         this._render();
 
@@ -64,6 +72,10 @@ export default class Slider extends BaseComponent {
      * Dispose the Slider.
      */
     dispose() {
+        if (this._labelId) {
+            $.removeAttribute(this._label, 'id');
+        }
+
         if (this._tooltip) {
             this._tooltip.dispose();
             this._tooltip = null;
