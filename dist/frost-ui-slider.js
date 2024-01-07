@@ -636,17 +636,13 @@
             $.setStyle(this._container, {
                 opacity: this._options.disabledOpacity,
             });
-            $.setAttribute(handles, {
-                tabindex: -1,
-            });
+            $.setAttribute(handles, { disabled: true });
         } else {
             $.setStyle(this._container, {
                 opacity: '',
             });
-            $.removeAttribute(handles, 'tabindex');
+            $.removeAttribute(handles, 'disabled');
         }
-
-        $.setAttribute(handles, { 'aria-disabled': disabled });
     }
     /**
      * Set the slider value.
