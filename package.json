@@ -1,6 +1,6 @@
 {
     "name": "@fr0st/ui-slider",
-    "version": "3.0.4",
+    "version": "3.0.5",
     "description": "FrostUI-Slider is a free, open-source Slider component for Javascript.",
     "keywords": [
         "ui",
@@ -35,10 +35,10 @@
     "author": "Elusive",
     "license": "MIT",
     "devDependencies": {
-        "@fr0st/eslint-config": "^1.0.2",
-        "@rollup/plugin-node-resolve": "^15.2.3",
-        "eslint": "^9.5.0",
-        "rollup": "^4.18.0",
-        "terser": "^5.31.1"
+        "@fr0st/eslint-config": "^1.0.3",
+        "@rollup/plugin-node-resolve": "^16.0.1",
+        "eslint": "^9.26.0",
+        "rollup": "^4.40.2",
+        "terser": "^5.39.1"
     }
 }
